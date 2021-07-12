@@ -24,6 +24,7 @@ function createWindow () {
     autoUpdater.checkForUpdatesAndNotify();
   });
 
+  autoUpdater.autoDownload = true;
 
   mainWindow.on('closed', function () {
     mainWindow = null;
