@@ -4,19 +4,35 @@
   "description": "",
   "main": "main.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/ashu8912/electron_update_experiment.git"
+    "type": "git",
+    "url": "https://github.com/ashu8912/electron_update_experiment.git"
   },
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "electron-builder build --linux --publish never",
-    "deploy": "electron-builder build --linux --publish always"
+    "build": "electron-builder build  --publish never",
+    "deploy": "electron-builder build  --publish always"
   },
-  "author": "",
+  "build": {
+    "appId": "com.example.ElectronAutoUpdate",
+    "asar": false,
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "executableName": "electron-update",
+      "maintainer": "ashu <ashughildiyal5@gmail.com>",
+      "category": "Learning"
+    }
+  },
+  "author": "Ashu",
   "license": "ISC",
   "devDependencies": {
     "electron": "^13.1.6",
     "electron-builder": "^22.11.7"
+  },
+  "dependencies": {
+    "electron-updater": "^4.3.9"
   }
 }
