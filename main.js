@@ -17,45 +17,35 @@ function createWindow () {
   mainWindow.webContents.on('dom-ready', () => {
     const appVersion = app.getVersion();
     console.log(`Trying to send app version to renderer: ${appVersion}`)
-    mainWindow.webContents.send('app_version', appVersion)
+    mainWindow.webContents.send('app_version', appVersion);
+
+    autoUpdater.autoDownload = true;
+
+    autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+      mainWindow.webContents.send('update_downloaded');
+    });
+
+    autoUpdater.on('update-available', () => {
+      mainWindow.webContents.send('update_available');
+    });
+  
+    autoUpdater.on('checking-for-update', () => {
+      mainWindow.webContents.send('checking_for_update');
+    })
+  
+    autoUpdater.on('update-available', () => {
+      mainWindow.webContents.send('update_available');
+    })
   })
 
   mainWindow.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify();
   });
 
-  autoUpdater.autoDownload = true;
 
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
-
-  autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('update_available');
-  });
-  
-  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-    const dialogOpts = {
-      type: 'info',
-      buttons: ['Restart', 'Later'],
-      title: 'Application Update',
-      message: process.platform === 'win32' ? releaseNotes : releaseName,
-      detail: 'A new version has been downloaded. Restart the application to apply the updates.'
-    }
-  
-    dialog.showMessageBox(dialogOpts).then((returnValue) => {
-      if (returnValue.response === 0) autoUpdater.quitAndInstall()
-    })
-    mainWindow.webContents.send('update_downloaded');
-  });
-
-  autoUpdater.on('checking-for-update', () => {
-    mainWindow.webContents.send('checking_for_update');
-  })
-
-  autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('update_available');
-  })
 }
 
 app.on('ready', () => {
