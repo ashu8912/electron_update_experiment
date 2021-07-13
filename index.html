@@ -31,27 +31,39 @@
 <body>
   <h1>Electron Auto Update Example</h1>
   <p id="version"></p>
+  <div id="notification" class="hidden">
+    <p id="message"></p>
+    <button id="close-button" onClick="closeNotification()">
+      Close
+    </button>
+    <button id="restart-button" onClick="restartApp()" class="hidden">
+      Restart
+    </button>
+  </div>
   <script>
     const version = document.getElementById('version');
     window.api.receive("app_version", (data) => {
-            version.innerText = data;
+        version.innerText = data;
     });
 
     const notification = document.getElementById('notification');
     const message = document.getElementById('message');
     const restartButton = document.getElementById('restart-button');
+    console.log(notification)
     window.api.receive('update_available', () => {
+      console.log("update available trigerred")
       message.innerText = 'A new update is available. Downloading now...';
       notification.classList.remove('hidden');
     });
     window.api.receive('update_downloaded', () => {
+      console.log("update downloaded trigerred")
       message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
       restartButton.classList.remove('hidden');
       notification.classList.remove('hidden');
     });
 
     window.api.receive('checking_for_update', () => {
-      console.log('received checing for update event');
+      console.log('received checking for update event');
       notification.classList.remove('hidden');
     })
 
@@ -68,13 +80,5 @@
     }
   </script>
 
-  <div id="notification" class="hidden">
-    <p id="message"></p>
-    <button id="close-button" onClick="closeNotification()">
-      Close
-    </button>
-    <button id="restart-button" onClick="restartApp()" class="hidden">
-      Restart
-    </button>
-  </div>
+
 </body>
