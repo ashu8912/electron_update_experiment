@@ -62,11 +62,6 @@
       notification.classList.remove('hidden');
     });
 
-    window.api.receive('checking_for_update', () => {
-      console.log('received checking for update event');
-      notification.classList.remove('hidden');
-    })
-
     window.api.receive('update_available', () => {
       console.log('update is available');
     })
