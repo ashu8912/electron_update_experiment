@@ -1,15 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
-import {useState, useEffect} from 'react';
+import { useEffect } from 'react';
 
 function App() {
   const {desktopApi} = window;
-  const [version, setVersion] = useState('');
-  
+
   useEffect(() => {
-    desktopApi.receive("app_version", (version) => {
-      console.log(version);
-      setVersion(version);
+    desktopApi.receive("update_available", (data) => {
+      console.log(data);
     })
   }, [])
   
@@ -17,9 +15,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          App version is  <code>{version}</code> 
-        </p>
         <a
           className="App-link"
           href="https://reactjs.org"

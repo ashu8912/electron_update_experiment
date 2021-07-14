@@ -2,7 +2,9 @@
 const { app, BrowserWindow } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
-const url = require('path')
+const url = require('path');
+const { Octokit } = require("@octokit/core");
+const octokit = new Octokit();
 
 let mainWindow;
 
@@ -25,26 +27,21 @@ function createWindow () {
   
   mainWindow.webContents.on('dom-ready', () => {
     const appVersion = app.getVersion();
-    console.log(`Trying to send app version to renderer: ${appVersion}`)
-    mainWindow.webContents.send('app_version', appVersion);
-
-    autoUpdater.autoDownload = true;
-
-    autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-      mainWindow.webContents.send('update_downloaded');
-    });
-
-    autoUpdater.on('update-available', () => {
-      mainWindow.webContents.send('update_available');
-    });
-  
-    autoUpdater.on('checking-for-update', () => {
-      mainWindow.webContents.send('checking_for_update');
-    })
-  
-    autoUpdater.on('update-available', () => {
-      mainWindow.webContents.send('update_available');
-    })
+    console.log(appVersion);
+    async function fetchReleases() {
+      const response = await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
+          owner: 'ashu8912',
+          repo: 'electron_update_experiment'
+        })
+        console.log(response.data);
+   if(response.data.name !== appVersion) {
+     mainWindow.webContents.send('update_available', {
+       downloadURL: response.data.html_url,
+       releaseNotes: response.data.body
+     })
+   }
+  }
+  fetchReleases()
   })
 
   mainWindow.once('ready-to-show', () => {
