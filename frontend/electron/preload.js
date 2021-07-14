@@ -6,7 +6,7 @@ const {
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld(
-  "api", {
+  "desktopApi", {
       send: (channel, data) => {
           // whitelist channels
           let validChannels = ["update_available", "update_downloaded", "checking_for_update", "update_available"];

@@ -1,3 +1,5 @@
 /node_modules
 /electron-builder.yml
 /dist
+/frontend/node_modules
+/frontend/dist
