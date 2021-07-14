@@ -1,8 +1,7 @@
 
 const { app, BrowserWindow } = require('electron');
-const { autoUpdater } = require('electron-updater');
 const path = require('path');
-const url = require('path');
+const url = require('url');
 const { Octokit } = require("@octokit/core");
 const octokit = new Octokit();
 
@@ -11,7 +10,7 @@ let mainWindow;
 function createWindow () {
   const startUrl = process.env.ELECTRON_START_URL || url.format({
     pathname: path.join(process.resourcesPath, 'app/build', 'index.html'),
-    protocol: 'file:',
+    protocol: 'file',
     slashes: true,
   });
   mainWindow = new BrowserWindow({
@@ -43,11 +42,6 @@ function createWindow () {
   }
   fetchReleases()
   })
-
-  mainWindow.once('ready-to-show', () => {
-    autoUpdater.checkForUpdatesAndNotify();
-  });
-
 
   mainWindow.on('closed', function () {
     mainWindow = null;
