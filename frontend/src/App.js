@@ -1,13 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Modal from '@material-ui/core/Modal';
+import ReactMarkdown from 'react-markdown'
+import Backdrop from '@material-ui/core/Backdrop';
+import Popup from './Popup';
 
 function App() {
   const {desktopApi} = window;
-
+  const [newReleaseData, setNewReleaseData] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [showReleaseNotes, setShowReleaseNotes] = useState(false);
   useEffect(() => {
     desktopApi.receive("update_available", (data) => {
-      console.log(data);
+      setNewReleaseData(data);
+      setShowPopup(true);
     })
   }, [])
   
@@ -24,6 +31,16 @@ function App() {
           Learn React
         </a>
       </header>
+       <Modal open={showReleaseNotes} BackdropComponent={Backdrop}>
+          <ReactMarkdown>{newReleaseData?.releaseNotes}</ReactMarkdown>
+        </Modal>
+      {showPopup && <Popup popupCloseHandler={() => setShowPopup(false)} 
+       downloadURL = {newReleaseData.downloadURL}
+       releaseNotesClickHandler = {() => {
+         setShowReleaseNotes(true);
+         setShowPopup(false);
+        }}
+      />}
     </div>
   );
 }
